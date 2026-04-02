@@ -1,18 +1,25 @@
 import { useEffect, useState } from 'react'
 import { db } from './firebase'
 import { collection, getDocs } from 'firebase/firestore'
+import AddForm from './AddForm'
 
 function App() {
   const [ads, setAds] = useState([])
+  const [screen, setScreen] = useState('feed')
+
+  const fetchAds = async () => {
+    const snapshot = await getDocs(collection(db, 'ads'))
+    const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+    setAds(list)
+  }
 
   useEffect(() => {
-    const fetchAds = async () => {
-      const snapshot = await getDocs(collection(db, 'ads'))
-      const list = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
-      setAds(list)
-    }
     fetchAds()
   }, [])
+
+  if (screen === 'add') {
+    return <AddForm onBack={() => { setScreen('feed'); fetchAds() }} />
+  }
 
   return (
     <div style={{ maxWidth: '390px', margin: '0 auto', fontFamily: 'sans-serif' }}>
@@ -48,7 +55,7 @@ function App() {
       <div style={{ position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '390px', background: '#fff', borderTop: '1px solid #eee', display: 'flex', padding: '12px 0 24px' }}>
         <div style={{ flex: 1, textAlign: 'center', fontSize: '12px', color: '#534AB7', fontWeight: 500 }}>Лента</div>
         <div style={{ flex: 1, textAlign: 'center', fontSize: '12px', color: '#888' }}>Поиск</div>
-        <div style={{ flex: 1, textAlign: 'center', fontSize: '12px', color: '#888' }}>+ Добавить</div>
+        <div onClick={() => setScreen('add')} style={{ flex: 1, textAlign: 'center', fontSize: '12px', color: '#534AB7', fontWeight: 500, cursor: 'pointer' }}>+ Добавить</div>
         <div style={{ flex: 1, textAlign: 'center', fontSize: '12px', color: '#888' }}>Мои</div>
       </div>
     </div>

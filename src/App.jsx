@@ -7,6 +7,7 @@ function App() {
   const [ads, setAds] = useState([])
   const [screen, setScreen] = useState('feed')
   const [filter, setFilter] = useState(null)
+  const [search, setSearch] = useState('')
 
   const fetchAds = async () => {
     const snapshot = await getDocs(collection(db, 'ads'))
@@ -30,7 +31,7 @@ function App() {
       </div>
 
       <div style={{ padding: '16px' }}>
-        <input placeholder="Поиск объявлений..." style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box' }} />
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Поиск объявлений..." style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #ddd', fontSize: '14px', boxSizing: 'border-box' }} />
       </div>
 <div style={{ padding: '0 16px 12px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
   {[
@@ -49,7 +50,7 @@ function App() {
         {ads.length === 0 ? (
           <p style={{ color: '#888', textAlign: 'center', marginTop: '40px' }}>Объявлений пока нет</p>
         ) : (
-          ads.filter(ad => !filter || ad.category === filter).map(ad => (
+          ads.filter(ad => (!filter || ad.category === filter) && (!search || ad.title.toLowerCase().includes(search.toLowerCase()))).map(ad => (
             <div key={ad.id} style={{ background: '#f5f5f5', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}>
   <p style={{ margin: '0 0 4px', fontWeight: 500 }}>{ad.title}</p>
   <p style={{ margin: '0 0 8px', fontSize: '13px', color: '#888' }}>{ad.district} · {ad.price}</p>

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
-import { db, auth } from './firebase'
+import { db, auth, googleProvider } from './firebase'
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore'
-import { onAuthStateChanged, signOut, signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth'
-import { googleProvider } from './firebase'
+import { onAuthStateChanged, signOut, signInWithPopup } from 'firebase/auth'
 import AddForm from './AddForm'
 
 function App() {
@@ -13,11 +12,7 @@ function App() {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    onAuthStateChanged(auth, u => {
-      setUser(u)
-      if (u) setScreen('add')
-    })
-    getRedirectResult(auth)
+    onAuthStateChanged(auth, u => setUser(u))
     fetchAds()
   }, [])
 
@@ -31,7 +26,12 @@ function App() {
     if (user) {
       setScreen('add')
     } else {
-      await signInWithRedirect(auth, googleProvider)
+      try {
+        await signInWithPopup(auth, googleProvider)
+        setScreen('add')
+      } catch (e) {
+        alert('Разреши всплывающие окна в браузере и попробуй снова')
+      }
     }
   }
 

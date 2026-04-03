@@ -80,12 +80,18 @@ function App() {
                   <span onClick={async () => { await deleteDoc(doc(db, 'ads', ad.id)); fetchAds() }} style={{ cursor: 'pointer', fontSize: '16px', color: '#ccc', padding: '0 4px' }}>×</span>
                 )}
               </div>
-              <p style={{ margin: '0 0 8px', fontSize: '13px', color: '#888' }}>{ad.district} · {ad.price}</p>
-              <span style={{
-                padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 500,
-                background: ad.category === 'Продам' ? '#E1F5EE' : ad.category === 'Услуги' ? '#E6F1FB' : ad.category === 'Соседи' ? '#FAEEDA' : '#EEEDFE',
-                color: ad.category === 'Продам' ? '#0F6E56' : ad.category === 'Услуги' ? '#185FA5' : ad.category === 'Соседи' ? '#854F0B' : '#534AB7'
-              }}>{ad.category}</span>
+              <p style={{ margin: '0 0 4px', fontSize: '13px', color: '#888' }}>{ad.district} · {ad.price}</p>
+              {ad.description && <p style={{ margin: '0 0 8px', fontSize: '13px', color: '#555', lineHeight: '1.4' }}>{ad.description}</p>}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '8px' }}>
+                <span style={{
+                  padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 500,
+                  background: ad.category === 'Продам' ? '#E1F5EE' : ad.category === 'Услуги' ? '#E6F1FB' : ad.category === 'Соседи' ? '#FAEEDA' : '#EEEDFE',
+                  color: ad.category === 'Продам' ? '#0F6E56' : ad.category === 'Услуги' ? '#185FA5' : ad.category === 'Соседи' ? '#854F0B' : '#534AB7'
+                }}>{ad.category}</span>
+                {ad.contact && (
+                  <a href={`https://wa.me/${ad.contact.replace(/\D/g, '')}`} target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: '#25D366', fontWeight: 500, textDecoration: 'none' }}>WhatsApp →</a>
+                )}
+              </div>
             </div>
           ))
         )}

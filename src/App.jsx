@@ -27,7 +27,13 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, u => setUser(u))
     getRedirectResult(auth).then(result => {
-      if (result?.user) setScreen('add')
+      if (result?.user) {
+        const shouldRedirect = localStorage.getItem('redirectToAdd')
+        if (shouldRedirect) {
+          localStorage.removeItem('redirectToAdd')
+          setScreen('add')
+        }
+      }
     })
     fetchAds()
   }, [])
@@ -47,6 +53,7 @@ function App() {
   }
 
   const handleLogin = () => {
+    localStorage.setItem('redirectToAdd', 'true')
     signInWithRedirect(auth, googleProvider)
   }
 

@@ -23,17 +23,19 @@ function App() {
   const [filter, setFilter] = useState(null)
   const [search, setSearch] = useState('')
   const [user, setUser] = useState(null)
+  const [prevUser, setPrevUser] = useState(null)
 
   useEffect(() => {
-    onAuthStateChanged(auth, u => setUser(u))
-    getRedirectResult(auth).then(result => {
-      if (result?.user) {
+    onAuthStateChanged(auth, u => {
+      if (u && !prevUser) {
         const shouldRedirect = localStorage.getItem('redirectToAdd')
         if (shouldRedirect) {
           localStorage.removeItem('redirectToAdd')
           setScreen('add')
         }
       }
+      setPrevUser(u)
+      setUser(u)
     })
     fetchAds()
   }, [])

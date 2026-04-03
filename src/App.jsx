@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { db, auth } from './firebase'
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore'
-import { onAuthStateChanged, signOut, signInWithPopup } from 'firebase/auth'
+import { onAuthStateChanged, signOut, signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth'
 import { googleProvider } from './firebase'
 import AddForm from './AddForm'
 
@@ -13,7 +13,11 @@ function App() {
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    onAuthStateChanged(auth, u => setUser(u))
+    onAuthStateChanged(auth, u => {
+      setUser(u)
+      if (u) setScreen('add')
+    })
+    getRedirectResult(auth)
     fetchAds()
   }, [])
 
@@ -27,8 +31,7 @@ function App() {
     if (user) {
       setScreen('add')
     } else {
-      await signInWithPopup(auth, googleProvider)
-      setScreen('add')
+      await signInWithRedirect(auth, googleProvider)
     }
   }
 

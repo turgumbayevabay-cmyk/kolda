@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { db } from './firebase'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore'
 import AddForm from './AddForm'
 
 function App() {
@@ -52,7 +52,10 @@ function App() {
         ) : (
           ads.filter(ad => (!filter || ad.category === filter) && (!search || ad.title.toLowerCase().includes(search.toLowerCase()))).map(ad => (
             <div key={ad.id} style={{ background: '#f5f5f5', borderRadius: '12px', padding: '16px', marginBottom: '12px' }}>
-  <p style={{ margin: '0 0 4px', fontWeight: 500 }}>{ad.title}</p>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+    <p style={{ margin: '0 0 4px', fontWeight: 500 }}>{ad.title}</p>
+    <span onClick={async () => { await deleteDoc(doc(db, 'ads', ad.id)); fetchAds() }} style={{ cursor: 'pointer', fontSize: '16px', color: '#ccc', padding: '0 4px' }}>×</span>
+  </div>
   <p style={{ margin: '0 0 8px', fontSize: '13px', color: '#888' }}>{ad.district} · {ad.price}</p>
   <span style={{
     padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 500,
